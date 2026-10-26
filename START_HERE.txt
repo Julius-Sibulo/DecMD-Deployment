@@ -1,0 +1,1 @@
+DECMD FLASK + POSTGRES DEMO: read README.md. Deploy to a Python hosting service, not GitHub Pages. Set DATABASE_URL, SECRET_KEY, ALLOW_DEMO_SEED and DEMO_PASSWORD.
