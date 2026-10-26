@@ -3,7 +3,7 @@
   "rewrites": [
     {
       "source": "/:path*",
-      "destination": "https://YOUR-RENDER-SERVICE.onrender.com/:path*"
+      "destination": "https://decmd-backend.onrender.com/:path*"
     }
   ]
 }
