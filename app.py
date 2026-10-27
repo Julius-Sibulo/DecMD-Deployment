@@ -79,6 +79,11 @@ def record_event(user, event, detail=''):
     db.session.add(AuditEntry(user_id=user.id, event=event[:100], detail=str(detail)[:350]))
     db.session.commit()
 
+@app.route('/brand/decmd-mark.png')
+def brand_mark():
+    # Public logo asset used on the login and signup pages.
+    return send_from_directory(ROOT / 'docs' / 'assets', 'decmd-mark.png')
+
 @app.route('/healthz')
 def healthz():
     return jsonify(status='ok')
@@ -107,6 +112,8 @@ def home():
 
 @app.route('/login', methods=['GET', 'POST'])
 def login():
+    if request.method == 'GET' and current_user():
+        return redirect(url_for('home'))
     if request.method == 'POST':
         email = (request.form.get('email') or '').strip().lower()
         password = request.form.get('password') or ''
@@ -125,6 +132,8 @@ def login():
 
 @app.route('/signup', methods=['GET', 'POST'])
 def signup():
+    if request.method == 'GET' and current_user():
+        return redirect(url_for('home'))
     if request.method == 'POST':
         email = (request.form.get('email') or '').strip().lower()
         password = request.form.get('password') or ''
@@ -146,8 +155,9 @@ def signup():
                 session['user_id'] = user.id
                 csrf_token()
                 record_event(user, 'signup', 'Created synthetic patient account')
+                flash('Account created. You are signed in as a patient.')
                 return redirect(url_for('home'))
-            flash('Your clinician account was created and is awaiting administrator approval.')
+            flash('Clinician account created. Approval is required before you can sign in. For immediate access, register as Patient.')
             return redirect(url_for('login'))
     return render_template('auth.html', mode='signup')
 

@@ -1,1 +1,71 @@
-<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DecMD | {{ 'Sign in' if mode == 'login' else 'Create account' }}</title><style>*{box-sizing:border-box}body{margin:0;background:#f3f7f8;color:#142c3a;font:16px system-ui,Arial;min-height:100vh;display:grid;place-items:center}main{width:min(440px,92vw);background:white;padding:36px;border-radius:16px;box-shadow:0 12px 50px #102c3915}h1{margin:4px 0 10px;font-size:27px}.muted{color:#677782;font-size:14px;line-height:1.6}label{display:block;margin:15px 0 6px;font-weight:600;font-size:14px}input,select{width:100%;border:1px solid #d5e0e5;border-radius:8px;padding:12px;font:inherit}button{border:0;background:#0e756c;color:white;width:100%;padding:13px;border-radius:8px;margin-top:22px;font-weight:700;cursor:pointer}a{color:#087a71}.logo{font-size:32px;font-weight:800;color:#133646}.logo span{color:#13a68e}.msg{background:#fff4e5;padding:12px;margin-top:12px;border-radius:8px;color:#855016}</style></head><body><main><div class="logo">Dec<span>MD</span></div><p class="muted">Synthetic clinical research demonstration · not for real patient information</p><h1>{{ 'Welcome back' if mode == 'login' else 'Create an account' }}</h1>{% for msg in get_flashed_messages() %}<div class="msg">{{ msg }}</div>{% endfor %}<form method="post"><input type="hidden" name="csrf_token" value="{{ csrf_token() }}">{% if mode == 'signup' %}<label for="name">Full name</label><input id="name" name="name" required maxlength="160"><label for="role">Account type</label><select id="role" name="role"><option value="patient">Patient</option><option value="doctor">Clinician (approval required)</option></select>{% endif %}<label for="email">Email</label><input id="email" name="email" type="email" required autocomplete="username"><label for="password">Password</label><input id="password" type="password" name="password" required minlength="12" autocomplete="{{ 'current-password' if mode == 'login' else 'new-password' }}"><button type="submit">{{ 'Sign in' if mode == 'login' else 'Create account' }}</button></form><p class="muted">{% if mode == 'login' %}New to DecMD? <a href="/signup">Create account</a>{% else %}Already registered? <a href="/login">Sign in</a>{% endif %}</p></main></body></html>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>DecMD — {{ 'Sign in' if mode == 'login' else 'Create account' }}</title>
+  <style>*{box-sizing:border-box}body.auth-page{margin:0;background:#06131c;color:#eaf9f6;font-family:Inter,system-ui,sans-serif}.auth-shell{min-height:100vh;display:grid;grid-template-columns:minmax(0,1.1fr) minmax(420px,.9fr)}.auth-story{padding:64px clamp(34px,6vw,110px);position:relative;overflow:hidden;background:radial-gradient(ellipse at 68% 59%,#134f55 0%,#092733 34%,#05111c 76%)}.auth-story:before{content:"";position:absolute;inset:0;background-image:linear-gradient(#64e7c808 1px,transparent 1px),linear-gradient(90deg,#64e7c808 1px,transparent 1px);background-size:46px 46px;pointer-events:none}.auth-logo{display:block;position:relative;z-index:2;width:min(300px,74%);height:100px}.auth-logo img{display:block;width:100%;height:100%;object-fit:contain;object-position:left center;filter:drop-shadow(0 0 12px #69ddbf30)}.auth-tag{display:inline-block;margin-top:65px;border:1px solid #70e0c444;color:#77ead1;border-radius:99px;padding:10px 14px;font-size:11px;font-weight:800;letter-spacing:.14em}.auth-story h1{max-width:650px;font-size:clamp(42px,5vw,79px);letter-spacing:-.065em;line-height:1.07;margin:25px 0 20px;font-weight:800}.auth-story h1 em{font-style:normal;color:#73e2cc}.auth-story p{max-width:530px;font-size:17px;line-height:1.8;color:#a3c0c9}.auth-network{position:relative;width:min(430px,85%);height:250px;margin:40px auto 20px;border:1px solid #64e7c82a;border-radius:50%;box-shadow:0 0 0 35px #64e7c809,0 0 0 75px #64e7c806}.network-center{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-size:43px;color:#8dfde0}.auth-network i{position:absolute;background:#70e0c4;box-shadow:0 0 20px #70e0c4;width:11px;height:11px;border-radius:50%}.auth-network i:nth-of-type(1){top:2%;left:42%}.auth-network i:nth-of-type(2){top:24%;left:5%}.auth-network i:nth-of-type(3){bottom:15%;left:12%}.auth-network i:nth-of-type(4){bottom:4%;left:61%}.auth-network i:nth-of-type(5){top:15%;right:11%}.auth-network i:nth-of-type(6){bottom:30%;right:0}.auth-foot{position:relative;color:#7997a3;font-size:12px;margin-top:40px}.auth-foot span{color:#76e3ca;margin:0 9px}.auth-panel{background:#f5faf9;color:#132d36;display:flex;flex-direction:column;justify-content:center;padding:60px clamp(30px,6vw,96px)}.auth-top{display:flex;align-items:center;justify-content:space-between;gap:16px;color:#44817c;font-size:11px;font-weight:800;letter-spacing:.1em}.auth-dot{letter-spacing:0;font-weight:600;color:#547e79}.auth-panel h2{font-size:clamp(39px,4vw,59px);line-height:1.09;letter-spacing:-.065em;margin:30px 0 10px}.auth-panel h2 span{color:#1cae94}.auth-intro{font-size:15px;color:#65818a;line-height:1.7;margin:0 0 28px}.auth-form{display:flex;flex-direction:column;gap:10px}.auth-form label{font-size:12px;color:#2f535a;font-weight:750;margin-top:10px}.auth-form input,.auth-form select{width:100%;min-height:51px;border-radius:10px;border:1px solid #d4e5e4;background:#fff;color:#123b3e;padding:12px 15px;font-size:14px;outline:none}.auth-form input:focus,.auth-form select:focus{border-color:#16b39b;box-shadow:0 0 0 4px #16b39b18}.auth-submit{min-height:54px;background:#0e8276;color:#fff;border:0;border-radius:10px;padding:14px 18px;margin-top:19px;display:flex;align-items:center;justify-content:space-between;text-decoration:none;font-size:15px;font-weight:800;cursor:pointer}.auth-submit:hover{background:#0b665f}.auth-switch{margin-top:28px;font-size:14px;color:#667f86}.auth-switch a{font-weight:800;color:#0c8d7e;text-decoration:none}.auth-legal{border-top:1px solid #dcebe8;padding-top:18px;margin-top:36px;font-size:12px;line-height:1.6;color:#729093}.auth-error{padding:15px;border-radius:9px;background:#fee9e8;color:#a92e34;font-size:13px}@media(max-width:850px){.auth-shell{grid-template-columns:1fr}.auth-story{padding:24px 28px 36px}.auth-logo{width:220px;height:58px}.auth-story h1{font-size:37px}.auth-tag{margin-top:18px}.auth-story p{font-size:13px}.auth-network,.auth-foot{display:none}.auth-panel{padding:35px 28px 50px}.auth-panel h2{font-size:40px}}
+.auth-success{padding:13px 16px;border-radius:12px;background:#0c473d;color:#9df1cd;margin:14px 0}
+
+.auth-logo img{width:min(280px,100%);height:auto;object-fit:contain;filter:drop-shadow(0 9px 25px rgba(65,223,184,.2))}
+.auth-story{position:relative;overflow:hidden}.auth-story:before{content:"";position:absolute;width:340px;height:340px;border:1px solid rgba(106,234,205,.12);border-radius:50%;top:16%;right:-130px;pointer-events:none}.auth-panel{backdrop-filter:blur(14px)}
+
+/* Unified DecMD identity, contrasted for dark healthcare UI */
+.auth-logo{display:flex;align-items:center;gap:17px;width:auto;height:auto;text-decoration:none;margin-bottom:38px}.auth-logo .brand-mark{width:83px;height:83px;object-fit:contain;filter:drop-shadow(0 0 10px #62f4cc6b)}.auth-wordmark{display:flex;flex-direction:column;color:#f6fcff;font-size:39px;font-weight:850;line-height:1;letter-spacing:-.055em}.auth-wordmark>span{display:inline}.auth-wordmark span span{color:#7cebd5}.auth-wordmark small{font-size:11px;font-weight:500;letter-spacing:.09em;margin-top:10px;color:#a5bccc}.auth-tag{margin-top:32px}.auth-shell{background:#081320}.auth-story{background:radial-gradient(ellipse at 50% 70%,#135661 0%,#0a2738 36%,#081522 78%)}.auth-panel{background:#0d1c2b;border-left:1px solid #294558}@media(max-width:800px){.auth-logo .brand-mark{width:59px;height:59px}.auth-wordmark{font-size:31px}.auth-story{padding:34px}}
+
+/* Match dark brand panel with a clean, luminous form panel */
+.auth-shell{background:#f4f9fb}
+.auth-panel{background:#f8fcfd!important;color:#15364b!important;border-left:1px solid #d5e6e9!important;backdrop-filter:none!important}
+.auth-panel h1,.auth-panel h2,.auth-panel h3,.auth-panel label{color:#15364b}
+.auth-panel p,.auth-switch,.auth-legal{color:#547080}
+.auth-panel input,.auth-panel select{background:#fff;color:#18394b;border:1px solid #b9d3dd;min-height:48px;font-size:15px}
+.auth-panel input:focus,.auth-panel select:focus{outline:2px solid #14a88b;outline-offset:2px}
+.auth-panel .auth-submit{background:#0a8b77;color:#fff;font-size:16px;font-weight:750}
+.auth-story p{font-size:17px;line-height:1.7}.auth-story .auth-tag{font-size:12px}
+.auth-wordmark{font-size:38px}.auth-panel .auth-switch a{color:#087b6c;font-weight:700}
+@media(max-width:800px){.auth-panel{border-left:0!important;border-top:1px solid #d5e6e9!important}}
+
+.auth-network .network-center{font-size:35px;font-weight:800} .auth-panel .auth-error {background:#fee9e8;color:#a92e34;margin:8px 0 16px} .auth-logo .brand-mark{flex:none;display:block;width:75px;height:75px;object-fit:contain;border:0;background:transparent;border-radius:0;filter:drop-shadow(0 0 16px #57ddbf55)} .auth-panel .auth-wordmark{color:#fff} .auth-top .auth-dot{color:#3c8478} .auth-form select{min-height:51px}
+  </style>
+</head>
+<body class="auth-page">
+<main class="auth-shell">
+  <section class="auth-story">
+    <a href="/login" class="auth-logo" aria-label="DecMD sign in">
+      <img class="brand-mark" src="/brand/decmd-mark.png" alt="DecMD network logo">
+      <span class="auth-wordmark">Dec<span>MD</span><small>DECENTRALIZED MEDICAL DATA</small></span>
+    </a>
+    <span class="auth-tag">CONNECTED HEALTH INFRASTRUCTURE</span>
+    <h1>Many institutions.<br><em>One connected story.</em></h1>
+    <p>Find authorized medical information where it lives. Verify its origins. Keep every correction accountable.</p>
+    <div class="auth-network" aria-hidden="true"><div class="network-center">✦</div><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <div class="auth-foot">Distributed custody <span>✳</span> Verifiable provenance <span>✳</span> Accountable access</div>
+  </section>
+  <section class="auth-panel">
+    <div class="auth-top"><span class="auth-kicker">SECURE ACCESS</span><span class="auth-dot">● System access</span></div>
+    <h2>{{ 'Welcome back' if mode == 'login' else 'Join DecMD' }}<span>.</span></h2>
+    <p class="auth-intro">{{ 'Sign in to your connected care workspace.' if mode == 'login' else 'Create an account for the synthetic research demonstration.' }}</p>
+    {% for msg in get_flashed_messages() %}<div class="auth-error" role="alert">{{ msg }}</div>{% endfor %}
+    <form method="post" class="auth-form">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      {% if mode == 'signup' %}
+        <label for="name">Full name</label>
+        <input id="name" name="name" maxlength="160" autocomplete="name" required placeholder="Your full name">
+        <label for="role">Account type</label>
+        <select id="role" name="role"><option value="patient">Patient — immediate access</option><option value="doctor">Clinician — approval required before sign-in</option></select>
+      {% endif %}
+      <label for="email">Email address</label>
+      <input id="email" name="email" type="email" required autocomplete="username" placeholder="you@hospital.org">
+      <label for="password">Password</label>
+      <input id="password" name="password" type="password" minlength="12" required autocomplete="{{ 'current-password' if mode == 'login' else 'new-password' }}" placeholder="{{ 'Enter your password' if mode == 'login' else 'At least 12 characters' }}">
+      <button type="submit" class="auth-submit">{{ 'Sign in' if mode == 'login' else 'Create account' }}<span aria-hidden="true">↗</span></button>
+    </form>
+    <div class="auth-switch">
+      {% if mode == 'login' %}New to DecMD? <a href="/signup">Create an account</a>
+      {% else %}Already have an account? <a href="/login">Sign in</a>{% endif %}
+    </div>
+    <div class="auth-legal">Synthetic clinical research demonstration. Do not enter real patient information. Clinical access requires authorization.</div>
+  </section>
+</main>
+</body>
+</html>
