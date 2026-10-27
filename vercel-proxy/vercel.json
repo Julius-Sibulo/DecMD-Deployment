@@ -1,6 +1,9 @@
 {
-  "$schema": "https://openapi.vercel.sh/vercel.json",
   "rewrites": [
+    {
+      "source": "/",
+      "destination": "https://decmd-backend.onrender.com/"
+    },
     {
       "source": "/:path*",
       "destination": "https://decmd-backend.onrender.com/:path*"
